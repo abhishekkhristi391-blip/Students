@@ -1,0 +1,20 @@
+/* ---------- DARK MODE ELEVATION ---------- */
+/* Flat black-on-black shadows are invisible, so dark mode gets its own
+   elevation treatment: a soft outer shadow plus a hairline inner highlight
+   so cards visibly lift off the background instead of blending into it.
+   Actual theme colors (light/dark values per palette) are applied at
+   runtime via CSS custom properties — see js/themes.js */
+body.dark .card,
+body.dark .stat-card {
+  box-shadow: 0 14px 32px -10px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+body.dark .banner-card {
+  box-shadow: 0 22px 48px -14px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+body.dark .nav-bar {
+  box-shadow: 0 20px 44px -10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+body.dark .subject-chip,
+body.dark .banner-cta {
+  box-shadow: 0 6px 16px -4px rgba(0,0,0,0.4);
+}
