@@ -1,2 +1,0 @@
-# Students
-For study 
