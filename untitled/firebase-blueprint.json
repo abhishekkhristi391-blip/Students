@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A student or user in the application.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "mobile": { "type": "string" },
+        "email": { "type": "string" },
+        "class": { "type": "string" },
+        "board": { "type": "string" },
+        "subjects": { "type": "array" },
+        "profilePic": { "type": "string" },
+        "totalPoints": { "type": "number" },
+        "rank": { "type": "number" },
+        "questionsAttempted": { "type": "number" },
+        "testsCompleted": { "type": "number" },
+        "correctAnswers": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "badges": { "type": "array" },
+        "streak": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["uid", "name", "email", "status"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles keyed by Firebase Auth UID."
+    },
+    "usernames/{username}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "To track unique usernames, mapping username to userId."
+    }
+  }
+}
