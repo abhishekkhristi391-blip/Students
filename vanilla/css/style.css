@@ -569,6 +569,60 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 0 0 2px var(--tint-teal);
 }
 .input-wrap { position: relative; }
+
+/* ---------- Chatroom ----------
+   Header, message list and composer all sit on the same --surface so the screen
+   reads as one page separated by hairlines, not three stacked blocks. The chat
+   screen also has to own its scroller: .phone-scroll is the page scroller, and
+   if it scrolled instead, the header would scroll away and the composer would
+   be stranded at the bottom of a long page. */
+.cr-root { height: 100%; overflow: hidden; background: var(--surface); }
+.cr-head { display: flex; align-items: center; gap: .875rem; padding: 3rem 1rem .875rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+.cr-id { flex: 1; min-width: 0; }
+.cr-name { font-size: 16px; font-weight: 600; line-height: 1.25; }
+.cr-status { font-size: 11px; font-weight: 500; color: var(--text-soft); margin-top: 1px; }
+.cr-avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--dark); color: var(--on-primary);
+  font-size: 17px; font-weight: 700;
+  /* the ring is what stops a flat accent disc from reading as a sticker */
+  border: 1px solid var(--border-strong); box-shadow: 0 0 0 3px var(--tint-lime);
+}
+.cr-scroll {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; padding: 1rem 1rem .5rem;
+  scrollbar-width: none;
+}
+.cr-scroll::-webkit-scrollbar { display: none; }
+
+.cr-msg { display: flex; margin-top: .5rem; }
+/* a run from one sender tightens up so a paragraph reads as a paragraph; a
+   change of sender opens the gap back up */
+.cr-msg.cont { margin-top: .125rem; }
+.cr-msg.them { justify-content: flex-start; }
+.cr-msg.me { justify-content: flex-end; }
+.cr-msg.new { animation: fadeIn var(--dur-2) var(--ease-out) backwards; }
+
+.cr-bubble { position: relative; max-width: 75%; padding: 10px 14px; border-radius: var(--radius-lg); font-size: 14px; line-height: 1.45; }
+/* The tail is a squared corner on the sender's side rather than a triangle: it
+   cannot drift out of alignment the way a positioned triangle does, and only
+   the last bubble of a run gets it, so a group reads as one shape. */
+.cr-bubble.them { background: var(--surface-grey); color: var(--text); }
+.cr-bubble.me { background: var(--dark); color: var(--on-primary); }
+.cr-bubble.them.tail { border-bottom-left-radius: 8px; }
+.cr-bubble.me.tail { border-bottom-right-radius: 8px; }
+.cr-text { margin: 0; word-break: break-word; white-space: pre-wrap; }
+.cr-time { display: block; margin-top: 3px; text-align: right; font-size: 10px; font-weight: 500; color: var(--text-soft); }
+.cr-bubble.me .cr-time { color: var(--on-primary); opacity: .6; }
+
+.cr-foot { border-top: 1px solid var(--border); background: var(--surface); padding: .625rem 1rem calc(.625rem + env(safe-area-inset-bottom, 0px)); }
+.cr-composer { display: flex; align-items: center; gap: .5rem; background: var(--surface-grey); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 6px 6px 6px 16px; transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease); }
+.cr-composer:focus-within { border-color: var(--teal-ink); box-shadow: 0 0 0 2px var(--tint-teal); }
+.cr-input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text); font-size: 15px; padding: .5rem 0; }
+.cr-input::placeholder { color: var(--text-faint); }
+.cr-send { width: 40px; height: 40px; flex-shrink: 0; border: none; border-radius: 50%; background: var(--dark); color: var(--on-primary); display: flex; align-items: center; justify-content: center; }
+.cr-send:disabled { opacity: .45; }
 .input-wrap .at { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-weight: 700; }
 .input-wrap input { padding-left: 2.25rem; padding-right: 2.5rem; }
 .input-wrap .status { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); display: flex; }
