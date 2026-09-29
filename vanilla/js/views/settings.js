@@ -89,7 +89,8 @@ export const settings = {
         </div>
       </div>
       <div id="modal-root"></div>
-    </div>`,
+    </div>`;
+  },
   mount: (el) => {
     const body = el;
     const knob = el.querySelector("#theme-knob");
