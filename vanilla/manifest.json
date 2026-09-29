@@ -1,0 +1,28 @@
+{
+  "name": "Exam Prep — School App",
+  "short_name": "Exam Prep",
+  "description": "Practice, take mock tests, track accuracy, and climb the leaderboard.",
+  "id": "/",
+  "start_url": "./index.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#120F24",
+  "theme_color": "#120F24",
+  "categories": ["education", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    { "src": "icons/favicon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Daily Challenge", "short_name": "Daily", "url": "./index.html#/daily" },
+    { "name": "Mock Test", "short_name": "Test", "url": "./index.html#/test/active" },
+    { "name": "Leaderboard", "short_name": "Ranks", "url": "./index.html#/leaderboard" }
+  ]
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Exam Prep — School App</title>
+    <meta name="description" content="Exam preparation app for school students (HTML/CSS/JS + Firebase)" />
+
+    <!-- CSP as a meta tag as well as a server header. A browser enforces the
+         intersection of both, so the two policies are kept identical.
+         The meta copy matters because a static host (Firebase Hosting, GitHub
+         Pages, an S3 bucket, a preview server) cannot inject a per-request
+         nonce, and a wrong or missing policy there silently blocks the Firebase
+         modules and the app hangs on the boot spinner with no error.
+         frame-ancestors is omitted here because browsers ignore it in a meta
+         tag; the server sends it, and X-Frame-Options: DENY is the backstop.
+         Keep in sync with Handler.csp() in serve.py. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://lh3.googleusercontent.com https://*.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://www.gstatic.com https://apis.google.com https://www.googleapis.com https://www.google-analytics.com https://*.google-analytics.com https://region1.google-analytics.com https://accounts.google.com https://*.firebaseapp.com https://*.googleusercontent.com; frame-src https://accounts.google.com https://*.firebaseapp.com https://*.web.app; worker-src 'self' blob:; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+    />
+
+    <!-- Applies the saved/OS theme before first paint. app.js is a module
+         (deferred by definition), so setting this there flashes the wrong
+         theme and costs a layout shift.
+         EXTERNAL on purpose: `script-src 'self'` without 'unsafe-inline'
+         blocks inline <script>, and a blocked inline import map breaks every
+         `firebase/*` specifier — the app then hangs on the boot spinner with
+         no visible error. -->
+    <script src="js/theme-init.js"></script>
+    <script src="js/diag.js"></script>
+
+    <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#120F24" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F5F6FA" media="(prefers-color-scheme: light)" />
+
+    <!-- Font: a <link> in <head> starts fetching in parallel with the CSS.
+         An @import inside style.css is render-blocking and discovered late. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" />
+
+    <link rel="stylesheet" href="css/style.css?v=10" />
+    <!-- No import map, and no inline <script> of any kind. An import map can
+         only be inline, so it needs a nonce or a sha256 in script-src, and
+         getting that wrong silently blocks the Firebase modules and hangs the
+         app. js/firebase.js instead imports the CDN by full URL and re-exports,
+         so every specifier in the app is either relative or an absolute URL. -->
+  </head>
+  <body>
+    <a class="skip-link" href="#app" id="skip-link">Skip to main content</a>
+    <div id="app" role="main">
+      <div class="boot-screen">
+        <div class="boot-spinner"></div>
+        <p id="boot-status" class="boot-status">Starting&hellip;</p>
+        <noscript><p class="boot-status">This app needs JavaScript enabled.</p></noscript>
+      </div>
+    </div>
+    <script type="module" src="js/app.js?v=10"></script>
+  </body>
+</html>

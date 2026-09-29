@@ -1,0 +1,476 @@
+{
+  "meta": {
+    "name": "Soft Pastel Mobile UI - Design System Profile",
+    "version": "1.0.0",
+    "purpose": "Give an AI coding assistant (Cursor) enough context to generate new mobile screens and components in this exact visual language.",
+    "source": "Three iOS-style mobile screen mockups, reference viewport 393px wide.",
+    "units": "px (equal to pt) at a 393px-wide viewport. Scale proportionally for other widths.",
+    "confidence": "Colors marked 'exact' were shown as labelled swatches. All other values are visual estimates (about +/-10%). Preserve ratios and relationships over absolute numbers.",
+    "content_policy": "No source copy, brand names, or data are included. Use {placeholders} and generate realistic content for the new product.",
+    "how_to_use": "Save as .cursor/rules/design-system.json (or reference with @design-system.json). Ask Cursor to follow it strictly: tokens first, then layout archetypes, then components, then ai_generation_rules."
+  },
+
+  "design_style": {
+    "name": "Soft Pastel Fintech",
+    "summary": "Flat, airy, color-coded mobile UI. Large saturated-pastel surfaces carry meaning, very large tightly-tracked numerals and headlines create hierarchy, and a single near-black accent handles all primary actions.",
+    "keywords": ["pastel", "flat", "friendly", "editorial", "large-type", "color-coded", "rounded", "minimal", "high-contrast-ink", "no-gradients", "no-shadows"],
+    "personality": ["calm", "confident", "modern", "approachable", "premium-but-playful"],
+    "principles": [
+      "Color is information: each item or category gets one pastel surface; the whole screen can take on that pastel when focused on a single item.",
+      "Hierarchy comes from size and weight of type, not from borders, shadows or decoration.",
+      "One giant element per screen (headline, key number, or gauge) anchors the composition.",
+      "Tiny uppercase labels sit above values to give a clear label-over-value rhythm.",
+      "Text is always near-black ink on pastel. Never use white text on pastel surfaces.",
+      "Only one dark filled button per screen; everything secondary is outlined or a soft tinted chip.",
+      "Generous radii everywhere. Nothing has sharp corners.",
+      "Surfaces are flat. Depth is created by stacking (sheet over color field, card over card) not by shadows."
+    ],
+    "avoid": [
+      "Gradients, glassmorphism, neumorphism, glows",
+      "Drop shadows on cards or buttons",
+      "Saturated or neon colors; pure black backgrounds",
+      "Thin, low-contrast grey text on pastel backgrounds",
+      "More than one accent color per screen besides pastel category fills",
+      "Dense tables, hairline dividers between list items, sharp corners",
+      "Heavy bold weights for headlines (keep display type regular to medium)"
+    ]
+  },
+
+  "color": {
+    "notes": "Three pastels are the identity. Any new category color must match their lightness and saturation range.",
+    "pastel": {
+      "lavender": { "hex": "#E2D2FE", "confidence": "exact", "role": "category fill / highlight tile / screen background" },
+      "sky": { "hex": "#BAE5F4", "confidence": "exact", "role": "category fill / screen background" },
+      "blush": { "hex": "#FCCDCD", "confidence": "exact", "role": "category fill / screen background" }
+    },
+    "pastel_generation_rule": {
+      "description": "To add more category colors, keep HSL lightness 86-91% and saturation 70-97%, then vary hue only.",
+      "measured_hsl": {
+        "lavender": "h261 s97 l91",
+        "sky": "h197 s72 l86",
+        "blush": "h0 s93 l90"
+      },
+      "suggested_extensions": {
+        "mint": "#C9F2DC",
+        "butter": "#FBEFC0",
+        "peach": "#FFD9C2"
+      }
+    },
+    "ink": {
+      "ink-900": { "hex": "#0D0D26", "confidence": "estimated", "role": "primary text on pastel, primary button fill, gauge fill, dark chip fill" },
+      "ink-700": { "hex": "#3A3A4D", "confidence": "estimated", "role": "secondary text" },
+      "ink-500": { "hex": "#6E6E80", "confidence": "estimated", "role": "muted labels" },
+      "ink-400": { "hex": "#9A9AA8", "confidence": "estimated", "role": "captions, unit text, disabled" }
+    },
+    "accent_variants": {
+      "pine": { "hex": "#0B2B26", "confidence": "estimated", "role": "alternative dark CTA/selected-chip fill when the screen is tinted blue-green. Same role as ink-900." }
+    },
+    "neutral": {
+      "white": { "hex": "#FFFFFF", "role": "app background, bottom sheets, floating pill buttons" },
+      "page-bg": { "hex": "#F6F8FB", "confidence": "estimated", "role": "canvas behind the app when shown in a presentation frame" },
+      "gray-100": { "hex": "#F0EEEF", "confidence": "estimated", "role": "inactive tiles, gauge track segments" },
+      "sky-50": { "hex": "#E7F6FB", "confidence": "estimated", "role": "lighter inner card on a sky screen (tint of the screen color, about 40-50% lighter)" }
+    },
+    "overlays": {
+      "chip-on-pastel": "rgba(13, 13, 38, 0.08)",
+      "outline-on-pastel": "rgba(13, 13, 38, 0.85) at 1px",
+      "outline-on-white": "rgba(13, 13, 38, 0.08) at 1px"
+    },
+    "semantic_mapping": {
+      "background.app": "white",
+      "background.focus_screen": "one pastel, full-bleed behind status bar",
+      "surface.card": "one pastel per item",
+      "surface.sheet": "white, radius-xl on top corners, overlaps the pastel field",
+      "surface.inset_card": "tint of the screen pastel",
+      "text.primary": "ink-900",
+      "text.secondary": "ink-700",
+      "text.muted": "ink-500",
+      "text.caption": "ink-400",
+      "action.primary": "ink-900 fill with white label",
+      "action.secondary": "transparent with 1px ink outline",
+      "action.tertiary": "chip-on-pastel overlay or white floating pill"
+    },
+    "usage_rules": [
+      "A screen is either white with pastel cards, or a full-bleed pastel with a white sheet or lighter inset card.",
+      "Never place two different pastels directly next to each other inside the same component, except a single highlight tile within a neutral row.",
+      "Soft chips on colored screens are made with the translucent dark overlay, never a new hue.",
+      "Ink on pastel must stay at contrast 7:1 or higher, which ink-900 does on all three pastels."
+    ]
+  },
+
+  "typography": {
+    "family": {
+      "primary": "Inter Tight",
+      "fallbacks": ["Geist", "Neue Montreal", "Aeonik", "Inter", "-apple-system", "SF Pro Display", "system-ui", "sans-serif"],
+      "character": "Modern neo-grotesque with slightly condensed, tight spacing. Clean numerals. No serif or mono in the UI.",
+      "features": "font-feature-settings: 'tnum' on for prices, balances and any changing numbers."
+    },
+    "scale": {
+      "display-hero": { "size": 56, "line_height": 0.95, "letter_spacing": "-0.04em", "weight": 500, "use": "Single screen headline, left aligned, wraps onto 2-3 lines" },
+      "display-amount": { "size": 48, "line_height": 1.0, "letter_spacing": "-0.035em", "weight": 500, "use": "Key number on a focus screen" },
+      "title-lg": { "size": 40, "line_height": 1.05, "letter_spacing": "-0.03em", "weight": 500, "use": "Title inside an inset card or detail view" },
+      "value-lg": { "size": 28, "line_height": 1.0, "letter_spacing": "-0.02em", "weight": 500, "use": "Price/amount at bottom-right of a card" },
+      "value-gauge": { "size": 32, "line_height": 1.0, "letter_spacing": "-0.02em", "weight": 500, "use": "Center value inside a gauge" },
+      "body-md": { "size": 15, "line_height": 1.35, "letter_spacing": "-0.01em", "weight": 500, "use": "Card entity name, region name, key values" },
+      "body-sm": { "size": 13, "line_height": 1.4, "letter_spacing": "0", "weight": 400, "use": "Descriptive paragraph, pinned to the bottom of a card" },
+      "value-sm": { "size": 13, "line_height": 1.2, "letter_spacing": "-0.01em", "weight": 600, "use": "Stat values under micro labels" },
+      "label-micro": { "size": 10, "line_height": 1.2, "letter_spacing": "0.06em", "weight": 500, "transform": "uppercase", "color": "ink-500", "use": "Label above a value, section labels, captions, tile dates" },
+      "button-label": { "size": 11, "line_height": 1.0, "letter_spacing": "0.08em", "weight": 600, "transform": "uppercase", "use": "Primary and outlined button text, filter chips" },
+      "chip": { "size": 12, "line_height": 1.0, "letter_spacing": "0", "weight": 500, "use": "Back/cancel pill, add pill" },
+      "status-bar": { "size": 15, "weight": 600, "use": "System clock" }
+    },
+    "ratios": "Display is about 4x body. Labels are much smaller than values. That extreme contrast between huge and tiny is the signature of the style.",
+    "rules": [
+      "Display and value type is regular to medium weight with negative tracking. Never bold or black.",
+      "All-caps is reserved for micro labels, buttons and filter chips, always with positive tracking.",
+      "Left align everything except button labels and gauge center text.",
+      "Currency or unit symbols use the same size as the number; units after numbers (like a size unit or 'used') drop to caption size and ink-400.",
+      "Keep line-height under 1.05 for anything above 28px."
+    ]
+  },
+
+  "spacing": {
+    "base_unit": 4,
+    "scale": [4, 8, 12, 16, 20, 24, 32, 40, 56],
+    "screen_padding_x": 20,
+    "section_gap": 24,
+    "card_gap": 8,
+    "card_padding": 16,
+    "sheet_padding": 20,
+    "inset_card_margin": 16,
+    "row_gap_small": 8,
+    "label_to_value_gap": 4,
+    "notes": "Vertical rhythm is loose. Space between the header row and the hero headline is large (about 24-32), and space between the headline and the first card is about 24."
+  },
+
+  "radius": {
+    "xs": 8,
+    "sm": 12,
+    "md": 16,
+    "lg": 20,
+    "xl": 28,
+    "pill": 999,
+    "usage": {
+      "list_card": "lg (20)",
+      "inset_card": "lg (20)",
+      "bottom_sheet_top_corners": "xl (28)",
+      "primary_button": "md (16)",
+      "outlined_small_button": "sm (12)",
+      "filter_chip_and_pill_button": "pill",
+      "small_tile": "sm (12) to xs (8)",
+      "avatar_and_icon_button": "pill (circle)",
+      "device_frame": "about 48 (mockup only, not part of the UI)"
+    }
+  },
+
+  "elevation": {
+    "policy": "Flat. No shadows on cards, sheets, or buttons.",
+    "exceptions": [
+      "Floating white pill button on a white background may use a 1px outline of rgba(13,13,38,0.08) instead of a shadow.",
+      "Presentation frames around mockups may use a very soft, large-blur shadow, but this is not part of the app UI."
+    ],
+    "depth_technique": "Stack layers: a white sheet overlaps the bottom of a pastel field, and an inset lighter card sits inside a slightly darker field, letting the edges of the underlying layer peek out at the sides."
+  },
+
+  "borders": {
+    "card": "none",
+    "outlined_button": "1px solid ink-900 (on pastel) or 1px solid rgba(13,13,38,0.08) (on white)",
+    "dividers": "none. Use spacing instead of lines.",
+    "selected_state": "Filled with ink-900 (or pine) and white text, never a colored border"
+  },
+
+  "iconography": {
+    "style": "Simple, thin-to-regular outline glyphs (1.5px stroke, rounded caps), very small, monochrome ink.",
+    "sizes": { "inline": 14, "button": 16, "badge": 24, "badge_large": 28 },
+    "patterns": [
+      "Small circular badge (about 20-24px) with a simple mark next to an entity name, on a translucent white or dark circle.",
+      "Leading tiny chevron or x inside back/cancel pills.",
+      "Trailing plus icon in add pill.",
+      "Circle-outlined icon button (about 32-36px) for search or utility actions.",
+      "Cluster of 2-3 small rounded-square glyph badges (about 28px) that slightly overlap, used as a decorative meta row above a title."
+    ],
+    "rules": "Icons never carry color. They inherit ink. No filled multicolor illustrations in the UI chrome."
+  },
+
+  "layout": {
+    "grid": "Single column, full-width components, 20px side margins, no multi-column grids except a 3-column stats row.",
+    "device_chrome": {
+      "status_bar": "Time at left, system icons at right, over the screen's background color. Height about 54 including the notch area.",
+      "dynamic_island": "Near-black pill centered at top.",
+      "home_indicator": "Short dark bar centered at the bottom, about 134x5 with full radius, 8px from the bottom edge."
+    },
+    "safe_areas": { "top": 54, "bottom": 34 },
+    "archetypes": {
+      "A_hero_and_stacked_cards": {
+        "background": "white",
+        "structure": [
+          "Header row: circular avatar left, white outlined pill button (label + plus icon) right",
+          "Hero headline (display-hero), left aligned, 2 lines",
+          "Vertical stack of full-width pastel cards, gap 8",
+          "Each card: top row = [badge + entity name] left, [region or type] right; bottom row = [primary detail in body-md + micro caption beneath] left, [value-lg] right",
+          "Card content is pinned to top and bottom edges (space-between) with a tall min-height of about 150-165"
+        ],
+        "color_logic": "Each card uses a different pastel. Cycle lavender, sky, blush (then extensions)."
+      },
+      "B_focus_screen_with_sheet": {
+        "background": "full-bleed pastel behind the status bar",
+        "structure": [
+          "Top row: tinted back/cancel pill (left)",
+          "Title row: badge + entity name on the left, outlined small pill button on the right",
+          "Micro label, then display-amount directly below it",
+          "White bottom sheet rising from about 40% down the screen, radius-xl on top corners, runs to the bottom edge",
+          "Inside sheet: centered gauge, then 3-column stat row, then micro section label, then horizontally scrolling tile row (clipped at the right edge to imply scroll), then full-width primary button pinned near the bottom"
+        ]
+      },
+      "C_browse_and_detail": {
+        "background": "full-bleed pastel",
+        "structure": [
+          "Top row: tinted back/cancel pill",
+          "Filter row: 3 pill chips (first selected = dark fill + white text, others outlined) + circular outlined icon button at the right end",
+          "Large inset card in a lighter tint of the pastel, margin 16, radius-lg, with the darker field visible around and slightly behind it",
+          "Inside the card, top to bottom: overlapping glyph badge cluster, title-lg, two label-over-value pairs, then flexible empty space, then body-sm paragraph, then full-width dark primary button at the very bottom"
+        ]
+      }
+    }
+  },
+
+  "components": {
+    "list_card": {
+      "fill": "one pastel",
+      "radius": 20,
+      "padding": 16,
+      "min_height": 156,
+      "border": "none",
+      "shadow": "none",
+      "layout": "flex column, justify space-between",
+      "top_row": "badge (20-24) + entity name (body-md) left; region/type (body-md) right, both ink-900",
+      "bottom_row": "left: body-md primary detail with label-micro caption below; right: value-lg",
+      "states": { "pressed": "scale 0.98, 120ms ease-out", "focused": "navigates to archetype B using the same pastel as the full-bleed background" }
+    },
+    "primary_button": {
+      "fill": "ink-900 (or pine on blue-green screens)",
+      "text": "white, button-label uppercase",
+      "height": 56,
+      "radius": 16,
+      "width": "100% of container minus container padding",
+      "alignment": "label centered",
+      "shadow": "none",
+      "states": { "pressed": "opacity 0.9 and scale 0.98", "disabled": "ink-900 at 40% opacity" },
+      "rule": "One per screen, pinned near the bottom of its container."
+    },
+    "outlined_small_button": {
+      "fill": "transparent",
+      "border": "1px solid ink-900",
+      "height": 32,
+      "padding_x": 12,
+      "radius": 12,
+      "text": "button-label uppercase, ink-900",
+      "use": "Secondary action in a title row"
+    },
+    "floating_pill_button": {
+      "fill": "white",
+      "border": "1px solid rgba(13,13,38,0.08)",
+      "height": 34,
+      "padding_x": 14,
+      "radius": 999,
+      "text": "chip, ink-900",
+      "icon": "trailing plus, 14px, gap 6"
+    },
+    "tinted_back_chip": {
+      "fill": "rgba(13,13,38,0.08) over the screen pastel",
+      "height": 28,
+      "padding_x": 12,
+      "radius": 999,
+      "text": "chip, ink-900",
+      "icon": "leading chevron or x, 12px, gap 4"
+    },
+    "filter_chip_group": {
+      "gap": 8,
+      "chip_height": 32,
+      "chip_padding_x": 14,
+      "radius": 999,
+      "selected": "fill ink-900 (or pine), white button-label text",
+      "unselected": "transparent, 1px solid ink-900, ink-900 text",
+      "trailing_action": "circular outlined icon button 32-36px"
+    },
+    "avatar": { "size": 36, "shape": "circle", "border": "none" },
+    "entity_badge": {
+      "size": 22,
+      "shape": "circle",
+      "fill": "white at 60% or rgba(13,13,38,0.08)",
+      "glyph": "simple 10px mark in ink-900"
+    },
+    "stat_group": {
+      "layout": "3 equal columns, left aligned",
+      "label": "label-micro",
+      "value": "value-sm",
+      "gap_label_value": 4,
+      "column_gap": 16
+    },
+    "tile_row": {
+      "layout": "horizontal scroll, no scrollbar, gap 8, last tile clipped by the screen edge",
+      "tile": {
+        "size": "about 64 x 56",
+        "radius": 12,
+        "padding": 8,
+        "fill_default": "gray-100",
+        "fill_highlight": "a pastel (only the first / most recent tile)",
+        "content": "label-micro on top, value-sm at the bottom"
+      },
+      "section_label": "label-micro above the row, 12px gap"
+    },
+    "inset_card": {
+      "fill": "sky-50 (lighter tint of the screen pastel)",
+      "radius": 20,
+      "margin": 16,
+      "padding": 20,
+      "layout": "flex column, title group at top, description and button pinned to bottom",
+      "surrounding_field": "screen pastel, visible as a border-like margin and slightly darker at the edges for a layered feel"
+    },
+    "key_value": {
+      "label": "label-micro on top",
+      "value": "body-md weight 600 below",
+      "gap": 4,
+      "group_gap": 16
+    },
+    "glyph_badge_cluster": {
+      "count": "2-3",
+      "size": 28,
+      "shape": "rounded square, radius 8",
+      "fill": "white or ink-900 alternating",
+      "overlap": "about -6px",
+      "use": "Decorative meta row above a title"
+    },
+    "bottom_sheet": {
+      "fill": "white",
+      "radius_top": 28,
+      "padding": 20,
+      "overlap": "rises over the pastel field, extends to the bottom edge including the safe area",
+      "handle": "none"
+    },
+    "gauge": {
+      "type": "segmented arc / radial meter",
+      "size": "about 220 wide, 130-150 tall visible arc",
+      "sweep_degrees": "180-220, open at the bottom",
+      "track": "6-8 separated segments in gray-100 with 3-4px gaps between them",
+      "fill": "solid ink-900 covering the first N segments, continuous stroke about 18-20px thick",
+      "caps": "rounded start cap on the fill, small knob or tick at the start",
+      "center": "value-gauge centered, caption below it in label-micro or 11px ink-400",
+      "implementation_hint": "Use SVG stroke-dasharray or a set of arc paths; animate the fill with stroke-dashoffset over 600ms ease-out on mount."
+    }
+  },
+
+  "data_visualization": {
+    "style": "Minimal. Big number plus one simple radial meter. No axes, gridlines, legends, or chart borders.",
+    "colors": "Fill uses ink-900. Track uses gray-100. Highlights may use a single pastel.",
+    "labels": "Micro uppercase labels for units and captions, big medium-weight numerals for the value."
+  },
+
+  "motion": {
+    "note": "Not visible in static screens. These are inferred defaults that fit the style.",
+    "duration_ms": { "micro": 120, "standard": 240, "emphasis": 400 },
+    "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "patterns": [
+      "Tapping a card expands its pastel to fill the screen (shared-element transition), and the white sheet slides up from the bottom.",
+      "Selected filter chip fill cross-fades between chips.",
+      "Gauge fill animates from zero on entry.",
+      "Buttons scale to 0.98 on press."
+    ]
+  },
+
+  "accessibility": {
+    "min_touch_target": 44,
+    "note": "Chips visually 28-32px tall must have an invisible hit area of at least 44px.",
+    "contrast": "ink-900 on all pastels exceeds 7:1. ink-500 and ink-400 must only be used on white or on the lightest surfaces and only for non-essential captions.",
+    "dynamic_type": "Allow display sizes to scale down first when text grows. Never truncate values.",
+    "color_alone": "Pastel color-coding must be paired with a text label for the category."
+  },
+
+  "css_variables": {
+    ":root": {
+      "--color-lavender": "#E2D2FE",
+      "--color-sky": "#BAE5F4",
+      "--color-blush": "#FCCDCD",
+      "--color-sky-50": "#E7F6FB",
+      "--color-ink-900": "#0D0D26",
+      "--color-ink-700": "#3A3A4D",
+      "--color-ink-500": "#6E6E80",
+      "--color-ink-400": "#9A9AA8",
+      "--color-pine": "#0B2B26",
+      "--color-white": "#FFFFFF",
+      "--color-gray-100": "#F0EEEF",
+      "--overlay-chip": "rgba(13, 13, 38, 0.08)",
+      "--radius-xs": "8px",
+      "--radius-sm": "12px",
+      "--radius-md": "16px",
+      "--radius-lg": "20px",
+      "--radius-xl": "28px",
+      "--radius-pill": "999px",
+      "--space-1": "4px",
+      "--space-2": "8px",
+      "--space-3": "12px",
+      "--space-4": "16px",
+      "--space-5": "20px",
+      "--space-6": "24px",
+      "--space-8": "32px",
+      "--font-sans": "'Inter Tight', 'Geist', 'Inter', -apple-system, system-ui, sans-serif",
+      "--ease-out": "cubic-bezier(0.22, 1, 0.36, 1)"
+    }
+  },
+
+  "tailwind_theme_extend": {
+    "colors": {
+      "lavender": "#E2D2FE",
+      "sky": { "DEFAULT": "#BAE5F4", "50": "#E7F6FB" },
+      "blush": "#FCCDCD",
+      "ink": { "900": "#0D0D26", "700": "#3A3A4D", "500": "#6E6E80", "400": "#9A9AA8" },
+      "pine": "#0B2B26",
+      "gray-soft": "#F0EEEF"
+    },
+    "borderRadius": { "xs": "8px", "sm": "12px", "md": "16px", "lg": "20px", "xl": "28px" },
+    "fontFamily": { "sans": ["Inter Tight", "Geist", "Inter", "system-ui", "sans-serif"] },
+    "fontSize": {
+      "display-hero": ["56px", { "lineHeight": "0.95", "letterSpacing": "-0.04em", "fontWeight": "500" }],
+      "display-amount": ["48px", { "lineHeight": "1", "letterSpacing": "-0.035em", "fontWeight": "500" }],
+      "title-lg": ["40px", { "lineHeight": "1.05", "letterSpacing": "-0.03em", "fontWeight": "500" }],
+      "value-lg": ["28px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+      "body-md": ["15px", { "lineHeight": "1.35", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+      "body-sm": ["13px", { "lineHeight": "1.4", "fontWeight": "400" }],
+      "label-micro": ["10px", { "lineHeight": "1.2", "letterSpacing": "0.06em", "fontWeight": "500" }],
+      "button-label": ["11px", { "lineHeight": "1", "letterSpacing": "0.08em", "fontWeight": "600" }]
+    }
+  },
+
+  "ai_generation_rules": {
+    "must": [
+      "Use only the tokens defined in this file. Do not invent new colors, radii, or font sizes.",
+      "Start every screen by choosing an archetype (A, B, or C) and follow its structure order exactly.",
+      "Assign one pastel per item or category and use ink-900 text on it.",
+      "Put exactly one dark filled primary button per screen, at the bottom of its container.",
+      "Make one element huge (hero headline, key number, or gauge) and keep everything else small.",
+      "Pair every value with a tiny uppercase micro label placed above or below it.",
+      "Keep surfaces flat: no shadows, gradients, or dividers.",
+      "Use tabular numerals for all numbers and negative letter-spacing for large type.",
+      "Use radius tokens consistently: 20 for cards, 16 for buttons, 28 for sheet tops, pill for chips.",
+      "Generate realistic placeholder content appropriate to the new product. Never reuse content from the source screens."
+    ],
+    "must_not": [
+      "Add shadows, gradients, glass effects, or borders on cards",
+      "Use white text on pastel surfaces",
+      "Use more than one dark button per screen",
+      "Use bold or black font weights for display type",
+      "Add more than one non-pastel accent hue",
+      "Use hairline separators between list items"
+    ],
+    "adapting_to_new_domains": "Swap the content model, keep the visual model. A card is always: [badge + name] top-left, [type] top-right, [detail + caption] bottom-left, [big value] bottom-right. A focus screen is always: pastel field, key number, white sheet with meter, stats, tiles and a primary button.",
+    "self_check_before_output": [
+      "Does the screen have exactly one dominant element?",
+      "Are all colors from the token list?",
+      "Is every surface flat with correct radii?",
+      "Is there exactly one primary button?",
+      "Are micro labels uppercase with positive tracking and large type tightly tracked?",
+      "Is text ink-900 on every pastel?"
+    ],
+    "prompt_template": "Build a {screen_name} for {product_description} following design-system.json. Use archetype {A|B|C}. Use {framework: React + Tailwind | SwiftUI | Flutter | React Native}. Map tokens from css_variables or tailwind_theme_extend. Generate realistic placeholder data and do not copy any text from the reference. Mobile-first at 393px width."
+  }
+}

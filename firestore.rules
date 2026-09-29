@@ -1,0 +1,147 @@
+rules_version = '2';
+
+// THESE RULES MUST BE DEPLOYED OR THEY HAVE NO EFFECT:
+//     firebase deploy --only firestore:rules
+// Until then the project runs whatever rules were last published, and every
+// read comes back permission-denied. Editing this file changes nothing on its
+// own -- that is the single most common cause of "permission-denied" reports
+// against a rules file that looks correct.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} { 
+      allow read, write: if false; 
+    }
+
+    // Primitive Helpers
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+
+    // Read a numeric field, defaulting to 0 when the key is absent. A doc
+    // written by an older build (or by a Cloud Function) may not carry every
+    // counter, and `missing - 1` is a rule *error* rather than false -- it
+    // aborts evaluation and denies the write with an opaque permission-denied.
+    // Defaulting keeps the rule total, so a missing field is a failed
+    // comparison instead of a crash.
+    function num(m, key) { return key in m ? m[key] : 0; }
+
+    // Same idea for a list field. It cannot reuse num(): that defaults to the
+    // integer 0, and `0.size()` is a type error, not an empty list.
+    function listSize(m, key) { return key in m ? m[key].size() : 0; }
+
+    // Users Collection
+    match /users/{userId} {
+      // Any signed-in user may read any user doc, because the leaderboard
+      // renders other students' names and points. This also covers reading
+      // one's own document, which is the users/{uid} stream in initStore().
+      allow read: if isSignedIn();
+      
+      allow create: if isOwner(userId)
+                    && isValidId(userId)
+                    && incoming().keys().hasAll(['uid', 'name', 'email', 'status', 'totalPoints', 'rank', 'streak'])
+                    && incoming().uid == userId
+                    && incoming().status == 'active'
+                    && incoming().totalPoints == 0;
+                    
+      // NOTE ON THE SCORED FIELDS
+      // totalPoints/streak/accuracy/... are written by the client today, so a
+      // determined user can always script the console to inflate them. The
+      // rules below reduce that to "monotonic, bounded increments" instead of
+      // "any value at all", which is the strongest guarantee available without
+      // a trusted backend. To make the leaderboard genuinely cheat-proof, move
+      // all stat writes into a Cloud Function using the Admin SDK (which
+      // bypasses these rules) and delete the stat fields from this allowlist.
+      //
+      // Every client write to users/{uid} is stat-only (see persistTestResult /
+      // persistPracticeAnswer in js/api.js): the counters, then accuracy, then
+      // streak, each in its own updateDoc. So the diff is checked with hasOnly,
+      // not hasAny: every affected key must appear in the allowlist, which
+      // admits { totalPoints: increment(10) } while still refusing a write that
+      // also touches `status`, `uid` or `username`.
+      allow update: if isOwner(userId)
+                    && isValidId(userId)
+                    && incoming().keys().hasAll(
+                         ['uid', 'name', 'email', 'status', 'totalPoints', 'streak'])
+                    // identity and lifecycle are immutable
+                    && incoming().uid == existing().uid
+                    && incoming().email == existing().email
+                    && incoming().status == existing().status
+                    // a client update may touch these fields and nothing else
+                    && incoming().diff(existing()).affectedKeys().hasOnly([
+                         'totalPoints', 'questionsAttempted', 'testsCompleted',
+                         'correctAnswers', 'streak', 'accuracy', 'rank', 'badges',
+                         'name', 'mobile', 'class', 'board', 'subjects', 'profilePic'])
+                    // counters may only move forward, and only by a sane step
+                    && num(incoming(), 'totalPoints') >= num(existing(), 'totalPoints')
+                    && num(incoming(), 'totalPoints') - num(existing(), 'totalPoints') <= 200
+                    && num(incoming(), 'questionsAttempted') >= num(existing(), 'questionsAttempted')
+                    && num(incoming(), 'questionsAttempted') - num(existing(), 'questionsAttempted') <= 100
+                    && num(incoming(), 'testsCompleted') >= num(existing(), 'testsCompleted')
+                    && num(incoming(), 'testsCompleted') - num(existing(), 'testsCompleted') <= 10
+                    && num(incoming(), 'correctAnswers') >= num(existing(), 'correctAnswers')
+                    && num(incoming(), 'correctAnswers') - num(existing(), 'correctAnswers') <= 100
+                    && num(incoming(), 'streak') >= num(existing(), 'streak')
+                    && num(incoming(), 'streak') - num(existing(), 'streak') <= 1
+                    // accuracy is a recomputed ratio, so it is allowed to fall
+                    && num(incoming(), 'accuracy') >= 0
+                    && num(incoming(), 'accuracy') <= 100
+                    && num(incoming(), 'rank') >= 0
+                    && listSize(incoming(), 'badges') <= listSize(existing(), 'badges') + 5;
+    }
+
+    // Usernames Collection (For unique check)
+    match /usernames/{username} {
+      allow read: if true; // Open to check availability during registration
+
+      allow create: if isSignedIn()
+                    && isValidId(username)
+                    && incoming().keys().hasAll(['uid'])
+                    && incoming().uid == request.auth.uid
+                    // Reserve a handle only for yourself: otherwise any signed-in
+                    // user could claim someone else's username and lock them out.
+                    && !exists(/databases/$(database)/documents/users/$(request.auth.uid));
+
+      allow delete: if isSignedIn()
+                    && existing().uid == request.auth.uid;
+    }
+
+    // Chats Collection (One-to-one messaging)
+    match /chats/{chatId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+
+      allow create: if isSignedIn()
+                    && request.auth.uid in incoming().participants
+                    && incoming().participants.size() == 2;
+
+      // Participants can update metadata, but the membership list is immutable.
+      // Without this guard a participant could append their own uid to any chat
+      // and grant themselves (or anyone) read access to it.
+      allow update: if isSignedIn()
+                    && request.auth.uid in resource.data.participants
+                    && incoming().participants == existing().participants
+                    && incoming().participantInfo == existing().participantInfo
+                    && incoming().diff(existing()).affectedKeys().hasOnly(
+                         ['lastMessage', 'lastMessageAt', 'unread']);
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn()
+                    && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+
+        allow create: if isSignedIn()
+                      && incoming().senderId == request.auth.uid
+                      && incoming().text is string
+                      && incoming().text.size() > 0
+                      && incoming().text.size() <= 2000
+                      && incoming().keys().hasAll(['text', 'senderId', 'createdAt'])
+                      && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+      }
+    }
+  }
+}

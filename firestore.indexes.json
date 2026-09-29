@@ -1,0 +1,24 @@
+{
+  "//": "Declarative Firestore indexes. Without these, Firestore rejects the matching queries with failed-precondition (\"The query requires an index\"), which the app was previously reporting to the user as a connection problem. Deploy with: firebase deploy --only firestore:indexes",
+  "indexes": [
+    {
+      "//": "js/leaderboard.js -- where status == 'active' + orderBy totalPoints desc",
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "totalPoints", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "//": "js/chat.js -- where participants array-contains uid + orderBy lastMessageAt desc (the message list)",
+      "collectionGroup": "chats",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "participants", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "lastMessageAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
