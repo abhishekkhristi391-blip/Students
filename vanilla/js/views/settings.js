@@ -1,11 +1,13 @@
-import { logoutUser, esc, trapFocus } from "../api.js";
+import { state, logoutUser, esc, trapFocus } from "../api.js";
 import { icon } from "../icons.js";
 
 let modal = null;
 
 export const settings = {
   protected: true,
-  render: () => `
+  render: () => {
+    const handle = (state.user?.username || "").trim();
+    return `
     <div class="view pb-safe flex flex-col" style="background:var(--surface-muted)">
       <div style="padding:3rem 1.5rem 1rem;background:var(--surface);box-shadow:var(--shadow);position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border)">
         <button class="icon-btn icon-btn-soft-muted" data-nav="/profile" aria-label="Go back to profile">${icon("chevronLeft", 24)}</button>
@@ -16,6 +18,20 @@ export const settings = {
         <div class="settings-group">
           <h3>Account</h3>
           <div class="settings-card">
+            ${handle ? `
+            <div class="set-row">
+              <div class="l">
+                <div class="set-icon" style="background:var(--tint-teal);color:var(--teal-ink)">${icon("user", 20)}</div>
+                <div>
+                  <div style="font-weight:500;font-size:15px">Username</div>
+                  <div class="xxs semibold" style="color:var(--teal-ink)">@${esc(handle)}</div>
+                </div>
+              </div>
+              <div class="flex gap-2" style="flex-shrink:0">
+                <button class="icon-btn icon-btn-soft-muted" id="copy-username" aria-label="Copy username">${icon("copy", 18)}</button>
+                <button class="icon-btn icon-btn-soft-muted" id="share-username" aria-label="Share username">${icon("share", 18)}</button>
+              </div>
+            </div>` : ""}
             <button class="set-row" data-modal="Language">
               <div class="l"><div class="set-icon" style="background:var(--tint-teal);color:var(--teal-ink)">${icon("globe", 20)}</div><span>Language</span></div>
               <span class="muted sm semibold">English</span>
@@ -98,6 +114,53 @@ export const settings = {
       await logoutUser();
       location.hash = "/login";
     });
+
+    /* ---- Username copy / share ----
+       The handle is the only way another student can find you in chat, and
+       until now it was visible on no screen at all after signup. */
+    const handle = (state.user?.username || "").trim();
+    const copyBtn = el.querySelector("#copy-username");
+    if (handle && copyBtn) {
+      const text = `@${handle}`;
+      const flash = (btn, ok) => {
+        const was = btn.innerHTML;
+        btn.innerHTML = icon(ok ? "check" : "x", 18);
+        setTimeout(() => { btn.innerHTML = was; }, 1400);
+      };
+      // navigator.clipboard needs a secure context; plain http on a LAN IP is
+      // not one, and that is exactly how this gets tested on a phone -- so the
+      // textarea fallback is the path that will actually run.
+      const copy = async (btn) => {
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return flash(btn, true);
+          } catch (e) { /* fall through to the textarea */ }
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        ta.remove();
+        flash(btn, ok);
+      };
+
+      copyBtn.addEventListener("click", () => copy(copyBtn));
+      el.querySelector("#share-username")?.addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        if (!navigator.share) return copy(btn);
+        try {
+          await navigator.share({ title: "My username", text, url: location.href });
+        } catch (err) {
+          if (err && err.name !== "AbortError") copy(btn);
+        }
+      });
+    }
 
     el.querySelectorAll("[data-modal]").forEach((b) =>
       b.addEventListener("click", () => showModal(body, b.dataset.modal))

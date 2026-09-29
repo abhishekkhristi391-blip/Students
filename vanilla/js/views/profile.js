@@ -25,6 +25,7 @@ export const profile = {
             <div style="width:100%;height:100%;background:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden">${blob("happy", 64)}</div>
           </div>
           <h2 class="h3">${esc(u.name || "Student")}</h2>
+          ${u.username ? `<p class="sm semibold" style="color:var(--teal-ink)">@${esc(u.username)}</p>` : ""}
           <p class="sm semibold" style="color:var(--text-soft)">${esc(u.class || "")} &bull; ${esc(u.board || "")}</p>
         </div>
         <div class="grid grid-cols-3 gap-3 mt-8">

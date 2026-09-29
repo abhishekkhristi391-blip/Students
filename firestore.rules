@@ -114,7 +114,14 @@ service cloud.firestore {
 
     // Chats Collection (One-to-one messaging)
     match /chats/{chatId} {
-      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      // `resource` is null when the document does not exist yet, so
+      // `resource.data.participants` is a rules *error*, not false -- it aborts
+      // evaluation and denies the read. ensureChatExists() getDocs the chat
+      // before creating it, so the very first message to any new person came
+      // back permission-denied ("start chat failed") and the chat could never
+      // be started. A missing chat is not anybody's chat to read.
+      allow read: if isSignedIn()
+                    && (resource == null || request.auth.uid in resource.data.participants);
 
       allow create: if isSignedIn()
                     && request.auth.uid in incoming().participants

@@ -40,9 +40,13 @@ export const chatroom = {
       if (!myUid || !otherUid) return;
 
       let otherName = "User";
+      let otherUsername = "";
       try {
         const otherSnap = await getDoc(doc(db, "users", otherUid));
-        otherName = otherSnap.exists() ? otherSnap.data().name || "User" : "User";
+        if (otherSnap.exists()) {
+          otherName = otherSnap.data().name || "User";
+          otherUsername = otherSnap.data().username || "";
+        }
       } catch (e) {
         console.error("chatroom: cannot read peer profile", e);
       }
@@ -53,7 +57,7 @@ export const chatroom = {
 
       chatId = await ensureChatExists(
         { uid: myUid, name: state.user.name, username: state.user.username },
-        { uid: otherUid, name: otherName }
+        { uid: otherUid, name: otherName, username: otherUsername }
       );
       markChatAsRead(chatId, myUid).catch((e) => console.error("chatroom: read receipt failed", e));
 
