@@ -11,7 +11,7 @@
  * the user has actually been to that screen. The two auth gates are included
  * because they are the only routes reachable with no network.
  */
-const VERSION = "v10";
+const VERSION = "v11";
 const SHELL_CACHE = `shell-${VERSION}`;
 
 // Bump the version whenever any of these change, or the SW serves stale files.
@@ -19,8 +19,8 @@ const SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./css/style.css?v=10",
-  "./js/app.js?v=10",
+  "./css/style.css?v=11",
+  "./js/app.js?v=11",
   "./js/router.js",
   "./js/api.js",
   "./js/firebase.js",
@@ -45,7 +45,7 @@ const SHELL = [
 // the page is worse than no worker, because it fails requests the network
 // would have served. Failing install = the browser keeps the previous worker
 // (or none) and the app still works.
-const CRITICAL = ["./index.html", "./css/style.css?v=10", "./js/app.js?v=10",
+const CRITICAL = ["./index.html", "./css/style.css?v=11", "./js/app.js?v=11",
   "./js/router.js", "./js/api.js", "./js/firebase.js",
   "./js/diag.js"];
 

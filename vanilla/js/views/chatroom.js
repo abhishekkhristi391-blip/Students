@@ -102,12 +102,12 @@ export const chatroom = {
         msgsEl.innerHTML = msgs.map((m, i) => {
           const isPeer = m.senderId !== myUid;
           const t = at(m.createdAt);
-          const tail = continues(m, msgs[i + 1]) ? "" : " tail";
-          const cls = ["cr-msg", isPeer ? "them" : "me", continues(msgs[i - 1], m) ? "cont" : "", painted.has(m.id) ? "" : "new"]
+          const side = isPeer ? "them" : "me";
+          const cls = ["cr-msg", side, continues(msgs[i - 1], m) ? "cont" : "", painted.has(m.id) ? "" : "new"]
             .filter(Boolean).join(" ");
           return `
           <div class="${cls}">
-            <div class="cr-bubble ${isPeer ? "them" : "me"}${tail}">
+            <div class="cr-bubble ${side}">
               <p class="cr-text">${esc(m.text)}</p>
               <span class="cr-time">${clock(t) || "Sending..."}</span>
             </div>
